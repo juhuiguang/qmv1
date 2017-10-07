@@ -1,0 +1,578 @@
+[ {
+	keyword : "master_listen",
+	title:"督学听课",
+	link:"/qm/teacher/sup_viewlisten.jsp?module=10&menu=22",
+	selectsql : "SELECT tb2.tkjs,tb3.tkcs FROM  (SELECT COUNT(*) tkjs FROM (SELECT a.listen_no FROM `qm_master_listen` a,`qm_master` b WHERE a.teacher_no = b.teacher_no AND a.`listen_time` BETWEEN '$(start_date)'   AND '$(end_date)' GROUP BY a.teacher_no) tb1)tb2, (SELECT COUNT(*) tkcs FROM `qm_master_listen` a,`qm_master` b WHERE a.teacher_no = b.teacher_no AND a.`listen_time` BETWEEN '$(start_date)'   AND '$(end_date)') tb3",
+	sqlparams : {
+		keys :  "start_date,end_date",
+		values : "start_date,end_date"
+	},
+	sqlresult:[],
+	resultFields:{
+		tkjs:"听课督学数",
+		tkcs:"听课次数"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "master_listen",
+		shorttext:"督学",
+		template : "本周共有$(tkjs)位督学",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(tkjs)位",
+		textvalue : "",
+		role:"xld,zkld,jxyz",
+		detailConfig:{
+		    keyword:"tkmasterDetail"
+		}
+	},{
+		textkey : "teacher_listened",
+		shorttext:"听课",
+		template : "听课$(tkcs)次",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(tkcs)次",
+		textvalue : "",
+		role:"xld,zkld,jxyz",
+		detailConfig:{
+		    keyword:"btkteacherDetail"
+		}
+	}]
+},{
+	keyword : "tkmasterDetail",
+	selectsql : " SELECT  c.teacher_name listen_master,COUNT(0) tkcs FROM  `qm_master_listen` a  LEFT JOIN `qm_master` b   ON a.teacher_no = b.teacher_no  LEFT JOIN `base_teach_task` d  ON d.task_no = a.task_no   LEFT JOIN `base_teacher` c  ON c.teacher_no = b.`teacher_no` LEFT JOIN `base_teacher` e ON e.teacher_no = d.`teacher_no`  WHERE   a.`listen_time` BETWEEN '$(start_date)' AND '$(end_date)'  GROUP BY a.teacher_no",
+	sqlparams : {
+		keys :  "start_date,end_date",
+		values : "start_date,end_date"
+	},
+	sqlresult:[],
+	resultFields:{
+		listen_master:"听课督学名称",
+		tkcs:"听课次数"
+	},
+	resultType : "detail"
+}
+,{
+	keyword : "btkteacherDetail",
+	selectsql : " SELECT  c.teacher_name listen_master,e.teacher_name listened_teacher,a.jxjy,a.skpj,a.`listen_time`,a.input_time FROM  `qm_master_listen` a LEFT JOIN `qm_master` b  ON a.teacher_no = b.teacher_no  LEFT JOIN `base_teach_task` d  ON d.task_no = a.task_no  LEFT JOIN `base_teacher` c ON c.teacher_no = b.`teacher_no` LEFT JOIN `base_teacher` e  ON e.teacher_no = d.`teacher_no` WHERE   a.`listen_time` BETWEEN '$(start_date)' AND '$(end_date)' ",
+	sqlparams : {
+		keys :  "start_date,end_date",
+		values : "start_date,end_date"
+	},
+	sqlresult:[],
+	resultFields:{
+		listen_master:"听课督学名称",
+		listened_teacher:"被听课教师名称",
+		jxjy:"教学建议",
+		skpj:"上课评价",
+		listen_time:"听课时间",
+		input_time:"录入时间"
+	},
+	resultType : "detail"
+}
+,{
+	keyword : "allcq",
+	link:"/qm/student/school_attendance.jsp?module=10&menu=24",
+	title:"全校出勤",
+	selectsql : "SELECT t.avgcql allcq,SUBSTRING_INDEX(t.maxcql,'-',1) maxcq,SUBSTRING_INDEX(t.maxcql,'-',-1) dep_name,SUBSTRING_INDEX(t.mincql,'-',1) mincq,SUBSTRING_INDEX(t.mincql,'-',-1) dep_name1 FROM (SELECT ROUND(AVG(SUBSTRING_INDEX(cql,'-',1)),2) AS avgcql,MAX(cql) maxcql,MIN(cql) mincql FROM (SELECT CONCAT(ROUND(AVG(a.`check_ratio`),2),'-',e.dep_name) cql, ROUND(AVG(a.`check_ratio`),2) AS radio, e.`dep_name`FROM qm_stu_check_main a, base_task_sche b, base_teach_task c, base_department e, base_classes f  WHERE a.`sche_no` = b.`sche_no` AND b.`task_no` = c.`task_no` AND a.`check_main_status` = '1'  AND a.`term_no` = '20151' AND a.term_no=c.term_no  AND c.`class_no` = f.`class_no` AND f.`dep_no` = e.`dep_no`  GROUP BY e.dep_no,e.dep_name) tb2) t",
+	sqlparams : {
+		keys : "term_no",
+		values : "term_no"
+	},
+	resultFields:{
+		allcq:"全校出勤率",
+		dep_name:"出勤率最高部门名称",
+		maxcq:"最高出勤率",
+		dep_name1:"出勤最低部门名称",
+		mincq:"最低出勤率"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "school_cq",
+		shorttext:"全校出勤率",
+		template : "出勤情况：当前全校平均出勤率$(allcq)%",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(allcq)%",
+		textvalue : "",
+		role:"xld,zkld,xgcz",
+		detailConfig:{
+		    keyword:"allcqDetail",
+		}
+	}, {
+		textkey : "max_cq",
+		shorttext:"$(dep_name)",
+		template : "其中$(dep_name)出勤率最高$(maxcq)%",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(maxcq)%",
+		textvalue : "",
+		role:"xld,zkld,xgcz",
+		detailConfig:{
+		    keyword:"allcqDetail",
+		}
+	}, {
+		textkey : "min_cq",
+		shorttext:"$(dep_name1)",
+		template : "$(dep_name1)出勤率偏低$(mincq)",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(mincq)%",
+		textvalue : "",
+		role:"xld,zkld,xgcz",
+		detailConfig:{
+		    keyword:"allcqDetail",
+		}
+	}]
+},{
+	keyword : "allcqDetail",
+	selectsql : " SELECT  ROUND(AVG(check_ratio), 2) AS cq,e.`dep_name`  FROM qm_stu_check_main a, base_task_sche b,  base_teach_task c, base_department e, base_classes f   WHERE a.`sche_no` = b.`sche_no`  AND b.`task_no` = c.`task_no`  AND a.`check_main_status` = '1'  AND a.`term_no` = '$(term_no)'  AND c.`class_no` = f.`class_no`  AND f.`dep_no` = e.`dep_no` GROUP BY e.`dep_name` ",
+	sqlparams : {
+		keys : "term_no",
+		values : "term_no"
+	},
+	resultFields:{
+		dep_name:"部门名称",
+		cq:"出勤率"
+	},
+	resultType : "detail"
+}, {
+	keyword : "master_plan",
+	link:"/qm/teacher/sup_listenplanadd.jsp?module=11&menu=28",
+	title:"督学听课计划",
+	selectsql : "SELECT tb2.jhjs,tb3.sjcs FROM (SELECT COUNT(*) jhjs FROM (SELECT a.teacher_no,a.plan_time FROM `qm_master_listen_plan` a LEFT JOIN `qm_master` b ON  a.teacher_no = b.teacher_no AND b.master_type='校级督学'  WHERE a.`plan_time` BETWEEN '$(start_date)' AND '$(end_date)') tb1) tb2, (SELECT COUNT(*) sjcs FROM  (SELECT c.teacher_no FROM   (SELECT a.teacher_no,a.plan_time FROM `qm_master_listen_plan` a LEFT JOIN `qm_master` b ON  a.teacher_no = b.teacher_no AND b.master_type='校级督学'  WHERE a.`plan_time` BETWEEN '$(start_date)' AND '$(end_date)') tb1 LEFT JOIN `qm_master_listen` c ON c.teacher_no = tb1.teacher_no WHERE FLOOR(DATEDIFF(c.`listen_time`,'1900-01-01')/7) = FLOOR(DATEDIFF(tb1.plan_time,'1900-01-01')/7) GROUP BY task_no) tb2)tb3",
+	sqlparams : {
+		keys :  "start_date,end_date",
+		values : "start_date,end_date"
+	},
+	resultFields:{
+		jhjs:"计划听课督学数",
+		sjcs:"实际听课次数"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "master_plan",
+		shorttext:"听课计划",
+		template : "本周校督导的听课计划共$(jhjs)次",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(jhjs)次",
+		textvalue : "",
+		role:"zkld",
+		detailConfig:{
+		    keyword:"master_planDetail",
+		}
+	},{
+		textkey : "plan_finish",
+		shorttext:"完成",
+		template : "已完成$(sjcs)次",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(sjcs)次",
+		textvalue : "",
+		role:"zkld",
+		detailConfig:{
+		    keyword:"master_planFinishDetail",
+		}
+	}]
+}, {
+	keyword : "master_planDetail",
+	selectsql : "SELECT c.teacher_name,a.*,d.course_name,e.teacher_name btkteacher_name FROM `qm_master_listen_plan` a  LEFT JOIN `qm_master` b ON  a.teacher_no = b.teacher_no AND b.master_type='校级督学'  LEFT JOIN `base_teacher` c ON a.teacher_no = c.teacher_no   LEFT JOIN `base_teach_task` d ON a.task_no = d.task_no  LEFT JOIN `base_teacher` e ON e.teacher_no = d.teacher_no  WHERE a.`plan_time` BETWEEN '$(start_date)' AND '$(end_date)'",
+	sqlparams : {
+		keys :  "start_date,end_date",
+		values : "start_date,end_date"
+	},
+	resultFields:{
+		teacher_name:"督学名称",
+		teacher_no:"督学工号",
+		plan_time:"计划时间",
+		plan_week:"计划周次",
+		set_time:"计划听课的时间",
+		course_name:"课程名称",
+		btkteacher_name:"被听课教师名称",
+		task_no:"所听课程编号"
+	},
+	resultType : "detail"
+} , {
+	keyword : "master_planFinishDetail",
+	selectsql : "SELECT c.*,a.teacher_name ,b.course_name,d.teacher_name btkteacher_name FROM    (SELECT a.teacher_no,a.plan_time FROM `qm_master_listen_plan` a  LEFT JOIN `qm_master` b ON  a.teacher_no = b.teacher_no AND b.master_type='校级督学'   WHERE a.`plan_time` BETWEEN '$(start_date)' AND '$(end_date)') tb1  LEFT JOIN `qm_master_listen` c ON c.teacher_no = tb1.teacher_no  LEFT JOIN `base_teacher` a ON a.teacher_no = c.teacher_no LEFT JOIN `base_teach_task` b  ON b.task_no = c.task_no   LEFT JOIN `base_teacher` d  ON d.teacher_no = b.teacher_no WHERE FLOOR(DATEDIFF(c.`listen_time`,'1900-01-01')/7) = FLOOR(DATEDIFF(tb1.plan_time,'1900-01-01')/7)  GROUP BY task_no",
+	sqlparams : {
+		keys :  "start_date,end_date",
+		values : "start_date,end_date"
+	},
+	resultFields:{
+		teacher_name:"督学名称",
+		teacher_no:"督学工号",
+		jxjy:"教学建议",
+		skpj:"上课评价",
+		listen_time:"听课时间",
+		input_time:"录入时间",
+		btkteacher_name:"被听课教师名称",
+		task_no:"所听课程编号",
+		course_name:"课程名称"
+	},
+	resultType : "detail"
+} , {
+	keyword : "attendance_warning",
+	link:"/qm/student/stu_check_search.jsp?module=10&menu=53",
+	title:"出勤预警",
+	selectsql : "SELECT COUNT(*) rs FROM( SELECT COUNT(*)AS cs FROM qm_stu_check WHERE check_time>'$(start_date)' AND check_time<'$(end_date)' AND check_status<>'请假' GROUP BY stu_no HAVING cs>'$(yjz)')tb2",
+	sqlparams : {
+		keys :  "start_date,end_date,yjz",
+		values : "start_date,end_date,yjz"
+	},
+	resultFields:{
+		rs:"缺勤超过预警值学生人数"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "text1",
+		shorttext:"学生",
+		template : "截止到今天，已经有$(rs)位同学缺勤超过预警值",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(rs)位",
+		textvalue : "",
+		role:"xgcz",
+		detailConfig:{
+		    keyword:"attendance_warningDetail",
+		}
+	}]
+}, {
+	keyword : "attendance_warningDetail",
+	selectsql : "SELECT *,COUNT(*) cs FROM qm_stu_check a LEFT JOIN `base_student` b ON b.`stu_no` = a.`stu_no` WHERE a.check_time>'$(start_date)' AND a.check_time<'$(end_date)' AND a.check_status<>'请假'  GROUP BY a.stu_no  HAVING cs>'$(yjz)'",
+	sqlparams : {
+		keys :  "start_date,end_date,yjz",
+		values : "start_date,end_date,yjz"
+	},
+	resultFields:{
+		stu_no:"学生学号",
+		stu_name:"学生姓名",
+		cs:"缺勤次数"
+	},
+	resultType : "detail"
+}, {
+	keyword : "class_attendance",
+	link:"/qm/student/stu_checking_inquire.jsp?module=12&menu=37",
+	title:"班级出勤",
+	selectsql : "SELECT d.`class_name`,ROUND(AVG(a.`check_ratio`),2) AS ratio FROM qm_stu_check_main a ,base_task_sche b ,base_teach_task c,base_classes d WHERE a.`sche_no` = b.`sche_no`  AND b.`task_no` =c.`task_no`  AND a.`check_main_status`='1'  AND c.`class_no` = '$(class_no)'  AND a.`term_no`='$(term_no)'  AND c.`class_no`=d.`class_no` AND a.`check_week` = '$(week)'",
+	sqlparams : {
+		keys : "class_no,term_no,week" ,
+		values : "class_no,term_no,week" 
+	},
+	resultFields:{
+		class_name:"查询班级名称",
+		ratio:"缺勤率"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "text1",
+		shorttext:"出勤率",
+		template : "$(class_name)本周出勤率$(ratio)%",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(ratio)%",
+		textvalue : "",
+		role:"bzr",
+		detailConfig:{
+		    keyword:"class_attendanceDetail",
+		}
+	} ]
+}, {
+	keyword : "class_attendanceDetail",
+	selectsql : "SELECT * FROM qm_stu_check_main a ,base_task_sche b ,base_teach_task c,base_classes d ,`qm_stu_check` e  WHERE a.`sche_no` = b.`sche_no`  AND b.`task_no` =c.`task_no`  AND a.`check_main_status`='1'  AND c.`class_no` = '2014065402'  AND a.`term_no`='20150'  AND c.`class_no`=d.`class_no` AND a.`check_week` = '8' AND e.check_main_no = a.check_main_no",
+	sqlparams : {
+		keys : "class_no,term_no,week" ,
+		values : "class_no,term_no,week" 
+	},
+	resultFields:{
+		course_name:"课程名称",
+		sche_set:"上课时间",
+		sche_addr:"上课地点",
+		teacher_name:"教师名称",
+		check_status:"考勤状态"
+	},
+	resultType : "detail"
+}, {
+	keyword : "inspection_report",
+	link:"/qm/base/base_qm_report.jsp?module=10&menu=64",
+	title:"巡查报告",
+	selectsql : "SELECT report_stuattendance,report_stustudy,report_teachmanage,report_teateach,report_teachsecurity,report_other FROM `qm_patrol_report` WHERE term_no = '$(term_no)' ORDER BY  report_time DESC LIMIT 0,1",
+	sqlparams : {
+		keys : "term_no",
+		values : "term_no"
+	},
+    resultFields:{
+		report_stuattendance:"学生出勤情况",
+		report_stustudy:"学生学习情况",
+		report_teateach:"教师教学情况",
+		report_teachmanage:"教学管理情况",
+		report_teachsecurity:"教学条件保障",
+		report_other:"其他情况"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "quality_report",
+		shorttext:"巡查报告",
+		template : "最新巡查报告结果，巡查记录学生出勤情况：$(report_stuattendance),巡查记录学生学习情况:$(report_stustudy),巡查记录教师教学情况:$(report_teateach),巡查记录教学管理情况:$(report_teachmanage),巡查记录教学条件保障:$(report_teachsecurity),巡查记录其他情况:$(report_other)",
+		errorText : "未查询到新的巡查报告",
+		shorttextvalue : "1篇",
+		textvalue : "",
+		role:"xssj,jxyz"
+	} ]
+}, {
+	keyword : "teacher_listen",
+	link:"/qm/teacher/sup_viewlisten.jsp?module=10&menu=22",
+	title:"督学听课详情",
+	selectsql : " SELECT tb4.no_listencount,tb5.listencount FROM  (SELECT COUNT(*) no_listencount FROM  (SELECT DISTINCT t1.teacher_no,t1.teacher_name FROM base_teacher t1,base_teach_task t2  WHERE t1.`teacher_no`=t2.`teacher_no` AND t2.term_no='$(term_no)' AND NOT EXISTS ( SELECT * FROM ( SELECT a.`teacher_no`,a.`teacher_name`,COUNT(c.`listen_no`) FROM base_teacher a,base_teach_task b,`qm_master_listen` c WHERE a.`teacher_no`=b.`teacher_no` AND b.term_no='$(term_no)' AND c.`task_no`=b.`task_no` GROUP BY a.teacher_no,a.teacher_name ) tb WHERE tb.teacher_no=t1.teacher_no ))tb3)tb4, (SELECT COUNT(*) listencount FROM  (SELECT a.`teacher_no`,a.`teacher_name`,COUNT(c.`listen_no`) FROM base_teacher a,base_teach_task b,`qm_master_listen` c WHERE a.`teacher_no`=b.`teacher_no` AND b.term_no='$(term_no)' AND c.`task_no`=b.`task_no` GROUP BY a.teacher_no,a.teacher_name) tb2)tb5",
+	sqlparams : {
+		keys : "term_no",
+		values : "term_no" 
+	},
+	 resultFields:{
+		listencount:"被听过一次课以上的教师",
+		no_listencount:"没被听过课的教师"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "one_listen_teacher",
+		shorttext:"教师",
+		template : "到今天为止有$(listencount)位教师被听过1次课以上",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(listencount)位",
+		textvalue : "",
+		role:"jxyz",
+		detailConfig:{
+		    keyword:"teacher_listen1Detail",
+		}
+	},{
+		textkey : "no_listen_teacher",
+		shorttext:"教师",
+		template : "未被听过课程的老师有$(no_listencount)人",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(no_listencount)位",
+		textvalue : "",
+		role:"jxyz"
+	}]
+}, {
+	keyword : "teacher_listen1Detail",
+	selectsql : "SELECT a.*,d.*,COUNT(c.`listen_no`) listencount FROM base_teacher a,base_teach_task b,`qm_master_listen` c,`base_department` d WHERE a.`teacher_no`=b.`teacher_no` AND b.term_no='$(term_no)' AND d.dep_no = a.dep_no AND c.`task_no`=b.`task_no` GROUP BY a.teacher_no,a.teacher_name ",
+	sqlparams : {
+		keys : "term_no",
+		values : "term_no" 
+	},
+	 resultFields:{
+		teacher_name:"教师名称",
+		teacher_type:"教师类型",
+		dep_name:"所属部门",
+		listencount:"被听课次数"
+	},
+	resultType : "detail"
+},  {
+	keyword : "stu_feedback",
+	link:"/qm/base/base_qm_feedback.jsp?module=10&menu=57",
+	title:"信息员反馈",
+	selectsql : "SELECT COUNT(*) stu_feadback_count FROM `qm_stu_feedback` WHERE feedback_time>'$(term_start_time)'",
+	sqlparams : {
+		keys : "term_start_time",
+		values : "term_start_time"
+	},
+	 resultFields:{
+		stu_feadback_count:"信息员反馈次数"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "student_feedback",
+		shorttext:"信息员反馈",
+		template : "信息员意见反馈有$(stu_feadback_count)条",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(stu_feadback_count)条",
+		textvalue : "",
+		role:"jxyz",
+		detailConfig:{
+		    keyword:"stu_feedbackDetail",
+		}
+	} ]
+}, {
+	keyword : "stu_feedbackDetail",
+	selectsql : "SELECT *  FROM `qm_stu_feedback` a LEFT JOIN `base_student` b ON a.stu_no = b.stu_no  WHERE  a.feedback_time>'$(term_start_time)'",
+	sqlparams : {
+		keys : "term_start_time",
+		values : "term_start_time"
+	},
+	 resultFields:{
+		stu_no:"反馈学生学号",
+		stu_name:"反馈学生姓名",
+		feedback_type:"反馈类型",
+		feedback_title:"反馈标题",
+		feedback_content:"反馈内容",
+		feedback_time:"反馈时间"
+	},
+	resultType : "detail"
+}, {
+	keyword : "dep_cq",
+	link:"/qm/student/school_attendance.jsp?module=10&menu=24",
+	title:"部门出勤",
+	selectsql : "SELECT tb3.allcq,tb4.dep_name,tb4.radio,tb5.class_name,tb5.ratio FROM  (SELECT ROUND(AVG(radio),2) allcq FROM (SELECT tb1.dep_name, ROUND(AVG(check_ratio),2) AS radio FROM (SELECT a.`check_ratio`,a.`check_count`,e.`dep_name`   FROM qm_stu_check_main a , base_task_sche b ,base_teach_task c ,base_department e,base_classes f  WHERE a.`sche_no`=b.`sche_no` AND b.`task_no`=c.`task_no` AND a.`check_main_status`='1'  AND a.`term_no`='$(term_no)' AND c.`class_no`=f.`class_no`  AND f.`dep_no`=e.`dep_no`)tb1   LEFT JOIN base_department f ON tb1.dep_name=f.`dep_name` GROUP BY tb1.dep_name,f.dep_no  ORDER BY radio DESC) tb2)tb3, (SELECT tb1.dep_name, ROUND(AVG(check_ratio),2) AS radio FROM (SELECT a.`check_ratio`,a.`check_count`,e.`dep_name`   FROM qm_stu_check_main a , base_task_sche b ,base_teach_task c ,base_department e,base_classes f  WHERE a.`sche_no`=b.`sche_no` AND b.`task_no`=c.`task_no` AND a.`check_main_status`='1'  AND a.`term_no`='$(term_no)' AND c.`class_no`=f.`class_no` AND e.dep_no='$(dep_no)' AND f.`dep_no`=e.`dep_no`)tb1   LEFT JOIN base_department f ON tb1.dep_name=f.`dep_name` GROUP BY tb1.dep_name,f.dep_no  ORDER BY radio DESC)tb4 ,(SELECT  class_name,MIN(ratio) ratio FROM  (SELECT f.`class_name`,f.class_no, ROUND(AVG(check_ratio),2) AS ratio  FROM qm_stu_check_main a , base_task_sche b ,base_teach_task c ,base_department e,base_classes f  WHERE a.`sche_no`=b.`sche_no` AND b.`task_no`=c.`task_no`   AND a.`check_main_status`='1' AND a.`term_no`='$(term_no)' AND c.`class_no`=f.`class_no` AND f.`dep_no`=e.`dep_no` AND e.`dep_no`='$(dep_no)'  GROUP BY f.`class_no`  ORDER BY ratio ASC) tb3)tb5",
+	sqlparams : {
+		keys : "term_no,dep_no" ,
+		values : "term_no,dep_no"
+	},
+	 resultFields:{
+		allcq:"全校出勤率",
+		dep_name:"本部门名称",
+		radio:"本部门出勤率",
+		class_name:"出勤率最低班级",
+		ratio:"出勤率班级最低出勤率"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "dep_cq",
+		shorttext:"$(dep_name)",
+		template : "当前分院出勤率为$(radio)%",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(radio)%",
+		textvalue : "",
+		role:"jxyz,xssj,fdy",
+		detailConfig:{
+		    keyword:"dep_cqDetail",
+		}
+	}, {
+		textkey : "all_cq1",
+		shorttext:"全校出勤率",
+		template : "全校平均出勤率$(allcq)%",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(allcq)%",
+		textvalue : "",
+		role:"jxyz,xssj,fdy",
+		detailConfig:{
+		    keyword:"dep_cqDetail",
+		}
+	}, {
+		textkey : "class_cq",
+		shorttext:"$(class_name)",
+		template : "其中$(class_name)班级出勤率较低，为$(ratio)%",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(ratio)%",
+		textvalue : "",
+		role:"jxyz,xssj,fdy",
+		detailConfig:{
+		    keyword:"dep_cqDetail",
+		}
+	}]
+}, {
+	keyword : "dep_cqDetail",
+	selectsql : "SELECT f.`class_name`,f.class_no, ROUND(AVG(check_ratio),2) AS ratio   FROM qm_stu_check_main a , base_task_sche b ,base_teach_task c ,base_department e,base_classes f   WHERE a.`sche_no`=b.`sche_no` AND b.`task_no`=c.`task_no`   AND a.`check_main_status`='1' AND a.`term_no`='$(term_no)' AND c.`class_no`=f.`class_no` AND f.`dep_no`=e.`dep_no` AND e.`dep_no`='$(dep_no)'   GROUP BY f.`class_no`  ORDER BY ratio DESC",
+	sqlparams : {
+		keys : "term_no,dep_no" ,
+		values : "term_no,dep_no"
+	},
+	 resultFields:{
+		class_name:"班级名称",
+		class_no:"班级编号",
+		ratio:"班级出勤率"
+	},
+	resultType : "detail"
+}, {
+	keyword : "teacher_courseinfo",
+	link:"/qm/student/tea_check.jsp?module=12&menu=35",
+	title:"我的教学",
+	selectsql : "SELECT tb1.jsk,tb2.sxk,tb3.class_count,tb4.tk_count FROM  (SELECT COUNT(*)jsk  FROM `base_teach_task` a  WHERE a.teacher_no='$(login_no)' AND a.term_no='$(term_no)' AND a.course_type<>'实训课')tb1, (SELECT COUNT(*)sxk  FROM `base_teach_task` a WHERE a.teacher_no='$(login_no)' AND a.term_no='$(term_no)' AND a.course_type='实训课')tb2, (SELECT COUNT(*)class_count FROM (SELECT * FROM `base_teach_task` a WHERE a.teacher_no='$(login_no)' AND a.term_no='$(term_no)' GROUP BY class_no) tb1)tb3, (SELECT COUNT(*)tk_count FROM `base_teach_task` a ,`qm_master_listen` b WHERE a.teacher_no='$(login_no)' AND a.term_no='$(term_no)'  AND a.task_no= b.task_no)tb4",
+	sqlparams : {
+		keys : "login_no,term_no" ,
+		values : "login_no,term_no"
+	},
+	 resultFields:{
+		jsk:"讲授课程数"
+	},
+	resultType : "column",
+	resultText : [ {
+		textkey : "jsk_count",
+		shorttext:"讲授课",
+		template : "您本学期承担的讲授课程有$(jsk)门",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(jsk)门",
+		textvalue : "",
+		role:"teacher",
+		detailConfig:{
+		    keyword:"teacher_courseinfoDetail",
+		}
+	},{
+		textkey : "sxk_count",
+		shorttext:"实训课",
+		template : " 您本学期承担的实训课有$(sxk)门课程",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(sxk)门",
+		textvalue : "",
+		role:"teacher",
+		detailConfig:{
+		    keyword:"teacher_courseinfoSDetail",
+		}
+	},{
+		textkey : "class_count",
+		shorttext:"班级",
+		template : "您共授课$(class_count)个班级。",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(class_count)个",
+		textvalue : "",
+		role:"teacher",
+		detailConfig:{
+		    keyword:"teacher_courseinfoCDetail",
+		}
+	},{
+		textkey : "listened_count",
+		shorttext:"被听课",
+		template : "您已被听课$(tk_count)次",
+		errorText : "很抱歉，查询出错了",
+		shorttextvalue : "$(tk_count)次",
+		textvalue : "",
+		role:"teacher",
+		detailConfig:{
+		    keyword:"teacher_courseTKinfoDetail",
+		}
+	}]
+},{
+	keyword : "teacher_courseinfoDetail",
+	selectsql : "SELECT *  FROM `base_teach_task` a WHERE a.teacher_no='$(login_no)' AND a.term_no='$(term_no)' AND a.course_type<>'实训课'",
+	sqlparams : {
+		keys : "login_no,term_no" ,
+		values : "login_no,term_no"
+	},
+	 resultFields:{
+		course_name:"课程名称",
+		course_type:"课程类型",
+		course_attr:"课程属性"
+	},
+	resultType : "detail"
+}, {
+	keyword : "teacher_courseinfoSDetail",
+	selectsql : "SELECT * FROM `base_teach_task` a WHERE a.teacher_no='$(login_no)' AND a.term_no='$(term_no)' AND a.course_type='实训课'",
+	sqlparams : {
+		keys : "login_no,term_no" ,
+		values : "login_no,term_no"
+	},
+	 resultFields:{
+		course_name:"课程名称",
+		course_type:"课程类型",
+		class_attr:"课程属性"
+	},
+	resultType : "detail"
+},{
+	keyword : "teacher_courseinfoCDetail",
+	selectsql : "SELECT * FROM `base_teach_task` a LEFT JOIN `base_classes` b  ON a.class_no = b.class_no WHERE a.teacher_no='$(login_no)' AND a.term_no='$(term_no)' GROUP BY a.class_no",
+	sqlparams : {
+		keys : "login_no,term_no" ,
+		values : "login_no,term_no"
+	},
+	 resultFields:{
+		class_name:"班级名称",
+		class_no:"班级编号",
+		course_name:"课程名称"
+	},
+	resultType : "detail"
+}, {
+	keyword : "teacher_courseTKinfoDetail",
+	selectsql : "SELECT *FROM `base_teach_task` a ,`qm_master_listen` b,`base_teacher` c WHERE a.teacher_no='$(login_no)' AND a.term_no='$(term_no)'  AND a.task_no= b.task_no AND c.teacher_no = b.teacher_no",
+	sqlparams : {
+		keys : "login_no,term_no" ,
+		values : "login_no,term_no"
+	},
+	 resultFields:{
+		course_name:"课程名称",
+		teacher_name:"听课教师名称",
+		skpj:"上课评价",
+		jxjy:"教学建议"
+	},
+	resultType : "detail"
+} ]

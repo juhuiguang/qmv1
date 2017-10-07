@@ -1,0 +1,50 @@
+@CHARSET "UTF-8";
+
+.detaildom{
+	position: fixed;
+    max-width: 40%;
+    z-index:1100;
+    background:#fff;
+}
+
+.detaildom .detailtable,.detaildom .h_detailtable{
+	width:auto;
+	max-width:100%;
+	text-align:center;
+	border:1px solid #999;
+	box-shadow:1px 1px 1px rgba(0,0,0,.5);
+}
+.detaildom .detailtable .tableheader,.detaildom .h_detailtable .tableheader{
+	position: relative; 
+	top: expression(this.offsetParent.scrollTop);
+}
+.detaildom .detailtable .tableheader .headerfield,.detaildom .h_detailtable .tableheader .headerfield{
+	font-weight:600;
+	background:#2185d0;
+	color:#fff;
+	padding:5px 10px;
+	line-height:2;
+}
+
+.detaildom .h_detailtable{
+	position:absolute;
+	top:0;
+	left:0;
+}
+.detaildom .detailtable .datafield{
+	padding:10px 10px;
+	min-width:220px;
+	border:1px solid #999;
+	line-height:1.5;
+}
+.statistic .value{
+	cursor:pointer;
+	color:#2185d0;
+}
+.card .header, .card .statistic .label{
+		font-weight:500 !important;
+		color:#000 !important;
+}
+
+
+
