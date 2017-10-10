@@ -33,18 +33,18 @@
 		
 		<div id="depdiv">
 			<a class="ui blue label" id="all">全&nbsp;&nbsp;&nbsp;&nbsp;部</a>
-			<a class="dep ui gray label" id="2241">能源与电气工程学院</a>
 		</div>
 		
 		<select class="ui mini dropdown" id="dropdown">
 		</select>
 
-		<div class="ui segment" id="chart2">
-
-		</div>
 
 		<div class="ui segment" id="chart">
 			
+		</div>
+
+		<div class="ui segment" id="chart2">
+
 		</div>
 
 		
@@ -310,7 +310,7 @@
                              id: 'dataZoomY',
                              type: 'slider',
 							 start:100,
-							 end:70,
+							 end:0,
                              yAxisIndex: [0],
                              filterMode: 'empty'
                          }

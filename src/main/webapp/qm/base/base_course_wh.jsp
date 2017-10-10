@@ -271,10 +271,11 @@
 				<i class="close icon" style="float: right;"></i>
 				<div class="header" id="statusExcelTitle">导入课程信息</div>
 				<div class="content">
-					<label class="bq">导入课程数据：</label> 
+					<label class="bq">导入课程数据：</label>
 					 <a href="javascript:;" class="file import">
 						<input  type="file" name="courseuploadify" id="courseuploadify" />
 					 </a>
+
 					 <p></p>   
 					 <label class="bq">下载数据模板：</label> 
 					 <a class="selectButton ui red small labeled icon add button" href=""><i class="download icon"></i>下载课程模板</a>
@@ -1929,27 +1930,16 @@
 		     
 		    //文件上传
 			function initFilePath() {
-				$("#courseuploadify").uploadify(
+		         console.log("aaaa");
+				var test=$("#courseuploadify").uploadify(
 						{
-							//接受true or false两个值，当为true时选择文件后会自动上传；为false时只会把选择的文件增加进队列但不会上传，这时只能使用upload的方法触发上传。不设置auto时默认为true
 							'auto' : true,
-							//设置上传按钮的class
-							//buttonClass: "some-class", 
-							//设置鼠标移到按钮上的开状，接受两个值'hand'和'arrow'(手形和箭头)
-							//buttonCursor: 'hand',
-							//设置图片按钮的路径（当你的按钮是一张图片时）。如果使用默认的样式，你还可以创建一个鼠标悬停状态，但要把两种状态的图片放在一起，并且默认的放上面，悬停状态的放在下面
-							//buttonImage: 'img/browse-btn.png', 
-							//设置按钮文字。值会被当作html渲染，所以也可以包含html标签
+
 							'buttonText' : '<i class="file excel outline icon"></i>&nbsp;&nbsp;选择文件',
 							//接受一个文件路径。此文件检查正要上传的文件名是否已经存在目标目录中。存在时返回1，不存在时返回0(应该主要是作为后台的判断吧)，默认为false
 							//checkExisting: '/uploadify/check-exists.php',
 							//开启或关闭debug模式
-							// debug: false,
-							//设置在后台脚本使用的文件名。举个例子，在php中，如果这个选项设置为'the_files',你可以使用$_FILES['the_files']存取这个已经上传的文件。
-							//fileObjName:'filedata',
-							//设置上传文件的容量最大值。这个值可以是一个数字或者字符串。如果是字符串，接受一个单位（B,KB,MB,GB）。如果是数字则默认单位为KB。设置为0时表示不限制
-							//fileSizeLimit:'100MB',
-							//swf的相对路径，必写项
+							'debug': false,
 							'swf' : 'script/common/uploadify/uploadify.swf',
 							'method' : 'post',
 							'uploader' : '../../do?invoke=uploadAction@upload',
@@ -1962,26 +1952,9 @@
 							'preventCaching' : false,
 							//设置文件上传时显示数据，有‘percentage’ or ‘speed’两个参数(百分比和速度)
 							'progressData' : 'percentage',
-							//设置每一次上传队列中的文件数量。注意并不是限制总的上传文件数量（那是uploadLimit）.如果增加进队列中的文件数量超出这个值，将会触发onSelectError事件。默认值为999
-							//	queueSizeLimit: 999,
-							//是否移除掉队列中已经完成上传的文件。false为不移除
-							//removeCompleted: true,
-							//设置上传完成后删除掉文件的延迟时间，默认为3秒。如果removeCompleted为false的话，就没意义了
-							//removeTimeout : 3,
-							//设置上传过程中因为出错导致上传失败的文件是否重新加入队列中上传
-							//requeueErrors : false,
-							//设置文件上传后等待服务器响应的秒数，超出这个时间，将会被认为上传成功，默认为30秒
-							//successTimeout : 30,
-							//可选文件的描述。这个值出现在文件浏览窗口中的文件类型下拉选项中。（chrome下不支持，会显示为'自定义文件',ie and firefox下可显示描述）
 							'fileDesc' : '表格文件(*.xls;*.xlsx;)',
 							//设置允许上传的文件扩展名（也就是文件类型）。但手动键入文件名可以绕过这种级别的安全检查，所以你应该始终在服务端中检查文件类型。输入多个扩展名时用分号隔开('*.jpg;*.png;*.gif')
 							'fileTypeExts' : '*.xls;*.xlsx',
-
-							//通过get或post上传文件时，此对象提供额外的数据。如果想动态设置这些值，必须在onUploadStartg事件中使用settings的方法设置
-							// 				 formData: {
-							// 	                    timestamp: '<?php echo $timestamp;?>',
-							// 	                    token: '<?php echo md5('unique_salt' . $timestamp);?>'
-							// 	                },
 
 							onCancel : function(file) {
 								//文件被移除出队列时触发,返回file参数
@@ -2092,40 +2065,10 @@
 								$('#excelImportSaveModal').removeAttr("disabled");
 								$('#excelImportSaveModal').removeClass('loading');
 								courseFilePath = "" + data;
-								// 									//每个文件上传成功后触发  
-								// 									alert('id: ' + file.id
-								// 											+ ' - 索引: '
-								// 											+ file.index
-								// 											+ ' - 文件名: '
-								// 											+ file.name
-								// 											+ ' - 文件大小: '
-								// 											+ file.size + ' - 类型: '
-								// 											+ file.type
-								// 											+ ' - 创建日期: '
-								// 											+ file.creationdate
-								// 											+ ' - 修改日期: '
-								// 											+ file.modificationdate
-								// 											+ ' - 文件状态: '
-								// 											+ file.filestatus
-								// 											+ ' - 服务器端消息: ' + data
-								// 											+ ' - 是否上传成功: ');
 							}
 
 						});
 
-				$('#uploadFile').click(function() {
-					$("#courseuploadify").uploadify('upload', '*');
-				});
-				$('#cancelFile').click(function() {
-					$("#courseuploadify")
-					//cancel：取消第一个上传的文件，如果后面带参数"*"则是取消掉整个上传队列，如$(el).uploadify('cancel', '*')
-					//upload：上传第一个上传的文件，如果后面带参数"*"则上传整个队列，跟cancel一样
-					//destroy：移除掉上传组建，按html默认的方法上传
-					//disable：有true or false 两个参数，表示是否禁止上传按钮，true表示禁止，false表示允许上传
-					//settings：返回或者更新一个实例的方法值，接受一个方法名的参数时是返回那个方法的值，当后面再跟一个参数，则是更新那个方法的值
-					//stop：停止正在上传中的文件或队列
-					.uploadify('cancel', '*');
-				});
 			}
 		    
 		  

@@ -7,7 +7,6 @@
 			<%@ include file="/commonjsp/meta.jsp"%>
 				<script src="script/common/echarts/echarts-all.js"></script>
 				<link rel="stylesheet" href="script/common/datepicker/jquery.datetimepicker.css">
-				<nk>
 					<script src="script/common/datepicker/jquery.datetimepicker.js"></script>
 					<!--这里引用其他样式-->
 					<title>校内教学质量监控运行平台</title>
@@ -171,7 +170,7 @@
 						}
 						$("#menu_dep").dropdown();
 					}else{
-						var dom='<option value="'+USEROBJECT.userinfo.dep_no+'" selected="selected">'+USEROBJECT.userinfo.dep_name+'</option>';
+						var dom='<option value="'+USEROBJECT.userpurview+'" selected="selected">'+SYSOBJCET.departments.find(function(d){return (d.dep_no===USEROBJECT.userpurview)}).dep_name+'</option>';
 						$('#menu_dep').append($(dom));
 						$("#menu_dep").dropdown();
 					}

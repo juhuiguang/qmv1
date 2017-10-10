@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="QualityMonitor:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="QualityMonitor.war">
+      <element id="artifact" artifact-name="QualityMonitor:war exploded" />
+    </root>
+  </artifact>
+</component>

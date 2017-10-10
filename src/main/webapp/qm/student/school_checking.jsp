@@ -222,7 +222,7 @@
 							});
 							load_school_checking($("#menu_condition> option:selected").val());
 						}else{
-							var dom='<option value="'+USEROBJECT.userinfo.dep_no+'" selected="selected">'+USEROBJECT.userinfo.dep_name+'</option>';
+							var dom='<option value="'+USEROBJECT.userpurview+'" selected="selected">'+SYSOBJCET.departments.find(function(d){return (d.dep_no===USEROBJECT.userpurview)}).dep_name+'</option>';
 							$('#menu_college').append($(dom));
 							$("#menu_college").dropdown();
 							college_no = $("#menu_college > option:selected").val();

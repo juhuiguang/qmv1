@@ -201,7 +201,7 @@ width:100%;
 		var USEROBJECT=<%=USEROBJECT%>;  
 		var termno = SYSOBJCET.term_no;
 		var tea_no=USEROBJECT.loginname;      
-		var depno=USEROBJECT.userinfo.dep_no;
+		var depno=USEROBJECT.userpurview;
 		//导出
 		$('#exportBtn').unbind('click').click(function(){
 			var params = [];		

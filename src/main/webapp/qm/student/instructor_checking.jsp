@@ -145,7 +145,7 @@
 				//获取当前日期
 				var starttime = "";
 				var endtime = "";
-				var depno = USEROBJECT.userinfo.dep_name;
+				var depno = USEROBJECT.userpurview;
 				var end = now.getFullYear() + "-" + ((now.getMonth() + 1) < 10 ? "0" : "") + (now.getMonth() + 1) + "-" + (now.getDate() < 10 ? "0" : "") + now.getDate();
 				jQuery(function() {
 					jQuery('#date_timepicker_start').datetimepicker({
@@ -176,7 +176,7 @@
 
 				function run(value) {
 					if (value == 3) {
-						load_college_checking(USEROBJECT.userinfo.dep_name);
+						load_college_checking(SYSOBJCET.departments.find(function(d){return (d.dep_no===USEROBJECT.userpurview)}).dep_name);
 					} else {
 						load_grade_attendace(value, termno);
 					}
@@ -233,26 +233,26 @@
 						}
 					});
 				}
-				load_college_checking(USEROBJECT.userinfo.dep_name);
+				load_college_checking(SYSOBJCET.departments.find(function(d){return (d.dep_no===USEROBJECT.userpurview)}).dep_name);
 				//导出功能
 				$("#export_dc").unbind('click').click(function() {
 					starttime = $('#date_timepicker_start').val();
 					endtime = $('#date_timepicker_end').val();
 					var params = [];
 					params.push(termno);
-					params.push(USEROBJECT.userinfo.dep_no);
+					params.push(USEROBJECT.userpurview);
 					params.push(starttime);
 					params.push(endtime+ ',');
 					params.push(termno);
 					params.push($('#menu_grade>option:selected').val());
 					params.push(termno);
-					params.push(USEROBJECT.userinfo.dep_no);
+					params.push(USEROBJECT.userpurview);
 					params.push(starttime);
 					params.push(endtime + ',');
 					params.push(termno);
 					params.push($('#menu_grade>option:selected').val());
 					params.push(termno);
-					params.push(USEROBJECT.userinfo.dep_no);
+					params.push(USEROBJECT.userpurview);
 					params.push(starttime);
 					params.push(endtime);
 					var type = "excel";
@@ -330,7 +330,7 @@
 						dataType: 'json',
 						data: {
 							term_no: termno,
-							dep_no: USEROBJECT.userinfo.dep_no,
+							dep_no: USEROBJECT.userpurview,
 							grade_no: grade_no,
 							starttime: starttime,
 							endtime: endtime
