@@ -19,7 +19,7 @@ public class BaseCheckService {
 					"SELECT  tb.dep_no,COUNT(DISTINCT teacher_no) AS amount FROM  "+
 					"( "+
 						"SELECT a.check_main_no,c.teacher_no,c.dep_no FROM qm_stu_check_main a,base_task_sche b,base_teach_task c "+
-						"WHERE a.check_main_status='1' AND a.`check_week` = '"+choose_week+"' AND c.term_no='"+term_no+"' AND c.task_no=b.task_no AND a.sche_no=b.sche_no "+
+						"WHERE a.check_main_status='1' AND (1>"+choose_week+" or a.`check_week` = '"+choose_week+"') AND c.term_no='"+term_no+"' AND c.task_no=b.task_no AND a.sche_no=b.sche_no "+
 						") tb  "+
 						"GROUP BY dep_no "+
 					") tb4 "+
@@ -29,7 +29,7 @@ public class BaseCheckService {
 						"SELECT a.dep_no , COUNT(1) AS amount FROM `base_teach_task` a "+
 						"LEFT JOIN `base_task_sche` b ON a.task_no = b.task_no "+ 
 						"JOIN `qm_stu_check_main` c ON c.`sche_no` = b.sche_no  "+
-						"WHERE c.check_main_status ='1' AND c.`check_week` = '"+choose_week+"' AND a.term_no = '"+term_no+"' GROUP BY a.dep_no "+
+						"WHERE c.check_main_status ='1' AND (1>"+choose_week+" or c.`check_week` = '"+choose_week+"') AND a.term_no = '"+term_no+"' GROUP BY a.dep_no "+
 					") tb6 "+
 				"ON tb6.dep_no = tb5.dep_no ";
 		}else{
@@ -45,7 +45,7 @@ public class BaseCheckService {
 						"SELECT  tb.dep_no,COUNT(DISTINCT teacher_no) AS amount FROM  "+
 								"( "+
 									"SELECT a.check_main_no,c.teacher_no,d.dep_no FROM qm_stu_check_main a,base_task_sche b,base_teach_task c,qm_dep_teacher d "+
-									"WHERE a.check_main_status='1' AND a.`check_week` = '"+choose_week+"' AND c.term_no='"+term_no+"' AND d.term_no='"+term_no+"' AND c.task_no=b.task_no AND a.sche_no=b.sche_no AND c.teacher_no=d.teacher_no "+
+									"WHERE a.check_main_status='1' AND (1>"+choose_week+" or a.`check_week` = '"+choose_week+"') AND c.term_no='"+term_no+"' AND d.term_no='"+term_no+"' AND c.task_no=b.task_no AND a.sche_no=b.sche_no AND c.teacher_no=d.teacher_no "+
 								") tb  "+
 								"GROUP BY dep_no "+
 							") tb4 "+
@@ -56,7 +56,7 @@ public class BaseCheckService {
 								" LEFT JOIN `base_task_sche` b ON a.task_no = b.task_no "+
 								" JOIN `qm_stu_check_main` c ON c.`sche_no` = b.sche_no  "+
 								" JOIN `qm_dep_teacher` d ON a.teacher_no = d.teacher_no AND d.term_no='"+term_no+"' "+
-								"WHERE c.check_main_status ='1' AND c.`check_week` = '"+choose_week+"' AND a.term_no = '"+term_no+"' GROUP BY d.dep_no "+
+								"WHERE c.check_main_status ='1' AND (1>"+choose_week+" or c.`check_week` = '"+choose_week+"') AND a.term_no = '"+term_no+"' GROUP BY d.dep_no "+
 							") tb6 "+
 						"ON tb6.dep_no = tb5.dep_no ";
 		}
@@ -76,7 +76,7 @@ public class BaseCheckService {
 					"LEFT JOIN `base_task_sche` b ON a.task_no = b.task_no "+
 					"LEFT JOIN `qm_stu_check_main` c ON c.`sche_no` = b.sche_no "+
 					"LEFT JOIN `base_teacher` e ON e.teacher_no = a.teacher_no "+
-					"WHERE a.term_no = '"+term_no+"' AND c.`check_week` = '"+choose_week+"' AND a.`dep_no` = '"+dep_no+"' GROUP BY a.teacher_no "+
+					"WHERE a.term_no = '"+term_no+"' AND (1>"+choose_week+" or c.`check_week` = '"+choose_week+"') AND a.`dep_no` = '"+dep_no+"' GROUP BY a.teacher_no "+
 					"ORDER BY totalamount ";
 		}else{
 			sql = 	"SELECT a.teacher_no ,e.teacher_name , COUNT(CASE WHEN c.`check_main_status`='1' THEN 1 END) totalamount, "+
@@ -87,7 +87,7 @@ public class BaseCheckService {
 					"left JOIN `qm_stu_check_main` c ON c.`sche_no` = b.sche_no "+ 
 					"left JOIN `qm_dep_teacher` d ON a.teacher_no = d.teacher_no AND d.term_no='"+term_no+"' "+
 					"LEFT JOIN `base_teacher` e ON e.teacher_no = a.teacher_no "+  
-					"WHERE  a.term_no = '"+term_no+"' AND c.`check_week` = '"+choose_week+"' AND d.`dep_no` = '"+dep_no+"' GROUP BY a.teacher_no "+
+					"WHERE  a.term_no = '"+term_no+"' AND (1>"+choose_week+" or c.`check_week` = '"+choose_week+"') AND d.`dep_no` = '"+dep_no+"' GROUP BY a.teacher_no "+
 					"ORDER BY totalamount";
 		}
 		JSONResponse jsonResponse = new JSONResponse();

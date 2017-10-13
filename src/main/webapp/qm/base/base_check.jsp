@@ -132,12 +132,14 @@
 		var userpurview =USEROBJECT.userpurview;
 		var depNo = null;
 		var currentweek = SYSOBJCET.currentweek;
-		var choosedweek=currentweek;
+		var choosedweek=0;
 		loadterm();
 		loadweek();
 		function loadweek() {
 			var currentIntWeek = parseInt(currentweek);
 			var dom = "";
+			var alldom='</option>'+'<option class="item"  selecter="selected" value="0">查看全部</option>';
+            $('#menu_week').append($(alldom));
 			for (var i = currentIntWeek ; i >= 1 ; i-- ) {
 					var dom_term = '</option>'+'<option class="item"  selecter="selected" value="' + i + '">' +"第"+ i+"周"+ '</option>';
 					$('#menu_week').append($(dom_term));
